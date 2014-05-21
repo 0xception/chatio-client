@@ -3,25 +3,10 @@ var _ = require('lodash');
 var readline = require('readline');
 var util = require('util');
 
-var config = require('./config/config.js');
-var logger = require('./lib/logger')(config.log);
+var logger = require('./lib/logger')();
 var colors = require('colors');
 
 var socket = null;
-/*
-program
-    .version(require('./package.json').version)
-    .option('-s, --server', 'Connect to ChatIO server on given host url');
-
-program
-    .command('*')
-    .description('[Server URL]')
-    .action(function(server) {
-        program.server = server;
-    });
-
-program.parse(process.argv);
-*/
 
 var help = [
     'ChatIO commands. Commands may be abbriviated',
@@ -55,7 +40,9 @@ module.exports.run = function run(program) {
             var completions = _.map(commands, function (command) {
                 return prefix + command + ' ';
             });
-            var hits = _.filter(completions, function(c) { return c.indexOf(line) == 0})
+            var hits = _.filter(completions, function(c) {
+                return c.indexOf(line) == 0}
+            );
             // show all completions if none found
             return [hits.length ? hits : completions, line]
         }
@@ -127,9 +114,10 @@ module.exports.run = function run(program) {
                 break;
             default:
                 if (socket.room) {
-                    socket.emit('message', { room: socket.room, message: line });
+                    socket.emit('message', {room: socket.room, message: line});
                 } else {
-                    console.log(['Command Not Found `', line.trim(), '`'].join('').blue);
+                    console.log(['Command Not Found `',
+                        line.trim(), '`'].join('').blue);
                 }
                 break;
         }
