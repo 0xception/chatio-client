@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+
+var program = require('commander');
+
+program
+    .version(require('../package.json').version)
+    .usage("[options] host")
+    .option('-s, --server', 'Connect to ChatIO server on given host url');
+
+program
+    .command('*')
+    .description('[Server URL]')
+    .action(function(server) {
+        program.server = server;
+    });
+
+program.name = 'chatio-client';
+
+program.parse(process.argv);
+
+require('chatio-client').run(program);

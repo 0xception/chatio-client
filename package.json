@@ -2,6 +2,13 @@
   "name": "chatio-client",
   "description": "Simple chat client to connect with chatio-server",
   "version": "0.0.1",
+  "author": "Courtney Wenman <0xception@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/0xception/chatio-client.git"
+  },
+  "main": "app.js",
+  "bin": "bin/chatio-client",
   "private": true,
   "dependencies": {
     "socket.io-client": "~0.9.16",
