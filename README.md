@@ -18,7 +18,7 @@ If your gitless
   
   Fire the client up and use :help for more options
 
-'''
+```
 $ chatio-client --help
   Usage: chatio-client [options]                                                  
                                       
@@ -27,4 +27,4 @@ $ chatio-client --help
     -h, --help     output usage information                                             
     -V, --version  output the version number                                            
     -s, --server   Connect to ChatIO server on given host url   
-'''
+```
