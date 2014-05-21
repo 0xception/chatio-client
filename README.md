@@ -6,7 +6,6 @@
 
 If you have a git or a github account:
 
-    $ # github account
     $ npm install -g git+https://github.com/0xception/chatio-client.git
 
 If your gitless 
@@ -28,3 +27,11 @@ $ chatio-client --help
     -V, --version  output the version number                                            
     -s, --server   Connect to ChatIO server on given host url   
 ```
+
+## Features
+
+  - Set and forget nicknames
+  - Create/join chatrooms and talk or argue or whatever floats your boat
+  - User and room lists
+  - Tab based auto completion of commands
+  - COLORZ! 
