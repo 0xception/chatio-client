@@ -10,7 +10,7 @@ If you have a git or a github account:
 
 If your gitless 
   
-    $ npm install -g https://github.com/0xception/chatio-server/archive/master.tar.gz
+    $ npm install -g https://github.com/0xception/chatio-client/archive/master.tar.gz
     
     
 ## Usage
@@ -34,4 +34,4 @@ $ chatio-client --help
   - Create/join chatrooms and talk or argue or whatever floats your boat
   - User and room lists
   - Tab based auto completion of commands
-  - COLORZ! 
+  - ALL DA COLORZ! 
