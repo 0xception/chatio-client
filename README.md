@@ -34,4 +34,5 @@ $ chatio-client --help
   - Create/join chatrooms and talk or argue or whatever floats your boat
   - User and room lists
   - Tab based auto completion of commands
+  - Whisper/private message users
   - ALL DA COLORZ! 
