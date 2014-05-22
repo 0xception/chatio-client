@@ -2,6 +2,10 @@
 
   Simple [node.js](http://nodejs.org) command line chat client to connect with [chatio-server](https://github.com/0xception/chatio-server).
 
+## Requirements
+
+  - [node.js](http://nodejs.org)
+
 ## Installation
 
 If you have a git or a github account:
