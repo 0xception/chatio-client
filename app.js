@@ -11,16 +11,17 @@ var socket = null;
 var help = [
     'ChatIO commands. Commands may be abbriviated',
     '',
-    'h[elp]                 ' + 'display this message.',
-    'c[onnect] host         ' + 'connect to given host',
-    'd[isconnect]           ' + 'disconnect from current host',
-    'n[ickname] username    ' + 'register your nickname',
-    'f[orget]               ' + 'deregister your nickname.',
-    'u[ser] [room:all]      ' + 'show user list, optionally filterd by room',
-    'j[oin] room            ' + 'join or create a room.',
-    'l[eave]                ' + 'leave the current room.',
-    'r[ooms]                ' + 'show a list of available rooms.',
-    'e[xit]                 ' + 'exit chatio',
+    'h, help                    ' + 'display this message.',
+    'c, connect <host>          ' + 'connect to given host',
+    'd, disconnect              ' + 'disconnect from current host',
+    'n, nickname <username>     ' + 'register your nickname',
+    'f, forget                  ' + 'deregister your nickname.',
+    'u, user [room:all]         ' + 'show user list, optionally filterd by room',
+    'j, join <room>             ' + 'join or create a room.',
+    'l, leave                   ' + 'leave the current room.',
+    'r, rooms                   ' + 'show a list of available rooms.',
+    'w, whisper <username> msg  ' + 'sends a private message to user.',
+    'e, exit                    ' + 'exit chatio',
 ].join('\n')
 
 module.exports.run = function run(program) {
@@ -35,7 +36,7 @@ module.exports.run = function run(program) {
         output: process.stdout,
         completer: function completer(line) {
             var commands = 'help connect disconnect nickname forget '
-                + 'users join leave rooms exit';
+                + 'users join leave rooms whisper exit';
                 commands = commands.split(' ');
             var completions = _.map(commands, function (command) {
                 return prefix + command + ' ';
@@ -210,6 +211,12 @@ function connect(host) {
         });
 
         socket.on('whisper', function(data) {
+            if (data.error) {
+                console.log(data.error.red);
+                updatePrompt();
+                return;
+            }
+
             var output = '';
             if (data.username) {
                 output += util.format("[%s] ".grey, data.username);
