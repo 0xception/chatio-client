@@ -103,6 +103,12 @@ module.exports.run = function run(program) {
                 var room = args[0];
                 socket.emit('leave', { room: room });
                 break;
+            case 'w':
+            case 'whisper':
+                var username = args[0];
+                var message = args.slice(1).join(' ');
+                socket.emit('whisper', { username: username, message: message });
+                break;
             case 'e':
             case 'exit':
                 console.log('Goodbye sweet prince'.blue);
@@ -200,6 +206,15 @@ function connect(host) {
                 output += util.format("[%s] ".yellow, data.username);
             } 
             console.log(output + data.message);
+            updatePrompt();
+        });
+
+        socket.on('whisper', function(data) {
+            var output = '';
+            if (data.username) {
+                output += util.format("[%s] ".grey, data.username);
+            } 
+            console.log(output + data.message.grey);
             updatePrompt();
         });
 
