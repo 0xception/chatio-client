@@ -24,12 +24,16 @@ var help = [
     'e, exit                    ' + 'exit chatio',
 ].join('\n')
 
+var prefix = '.';
+var re = new RegExp("^\\"+ prefix);
+
 module.exports.run = function run(program) {
     if (program.server) {
         connect(program.server);
     } else {
         connect();
     }
+    
 
     rl = readline.createInterface({
         input: process.stdin,
@@ -48,11 +52,15 @@ module.exports.run = function run(program) {
             return [hits.length ? hits : completions, line]
         }
     });
-    var prefix = ':';
-    var re = new RegExp("^"+ prefix);
-    updatePrompt();
 
-    rl.on('line', function(line) {
+    updatePrompt();
+    
+    rl.on('line', parseRLCommand).on('close', function() {
+        console.log('Goodbye sweet prince'.blue);
+        process.exit(0);
+    });
+
+    function parseRLCommand(line) {
         line = line.trim();
         
         if (line.match(re)) {
@@ -60,7 +68,11 @@ module.exports.run = function run(program) {
             var args = line.split(' ');
             var action = args.shift();
         }
+        
+        runCommand(action, args, line);
+    }
 
+    function runCommand(action, args, line) {
         switch(action) {
             case 'c':
             case 'connect':
@@ -129,10 +141,7 @@ module.exports.run = function run(program) {
                 break;
         }
         updatePrompt();
-    }).on('close', function() {
-        console.log('Goodbye sweet prince'.blue);
-        process.exit(0);
-    });
+    }
 };
 
 function connect(host) {
@@ -143,14 +152,19 @@ function connect(host) {
 
     socket.on('connect', function() {
         socket.on('notice', function(data) {
+            if (data.error) {
+                console.log(data.error.red);
+                showPrompt();
+                return;
+            }
             console.log(data.message.blue);
-            updatePrompt();
+            showPrompt();
         });
 
         socket.on('registered', function(data) {
             if (data.error) {
                 console.log(data.error.red);
-                updatePrompt();
+                showPrompt();
                 return;
             }
             socket.username = data.username;
@@ -161,7 +175,7 @@ function connect(host) {
         socket.on('deregistered', function(data) {
             if (data.error) {
                 console.log(data.error.red);
-                updatePrompt();
+                showPrompt();
                 return;
             }
             delete socket.username;
@@ -172,7 +186,7 @@ function connect(host) {
         socket.on('users', function(data) {
             console.log("Users: ".blue);
             listUsers(data.users);
-            updatePrompt();
+            showPrompt();
         });
         
         socket.on('rooms', function(data) {
@@ -180,13 +194,13 @@ function connect(host) {
             for(var room in data.rooms) {
                 console.log("  %s".cyan, data.rooms[room]);
             }
-            updatePrompt();
+            showPrompt();
         });
 
         socket.on('joined', function(data) {
             if (data.error) {
                 console.log(data.error.red);
-                updatePrompt();
+                showPrompt();
                 return;
             }
             socket.room = data.room;
@@ -205,30 +219,46 @@ function connect(host) {
             var output = '';
             if (data.username) {
                 output += util.format("[%s] ".yellow, data.username);
-            } 
-            console.log(output + data.message);
-            updatePrompt();
+            }
+            
+            cleanWrite(output + data.message);
         });
 
         socket.on('whisper', function(data) {
-            if (data.error) {
-                console.log(data.error.red);
-                updatePrompt();
-                return;
-            }
-
             var output = '';
             if (data.username) {
                 output += util.format("[%s] ".grey, data.username);
             } 
-            console.log(output + data.message.grey);
-            updatePrompt();
+
+            cleanWrite(output + data.message.grey);
         });
 
         socket.on('error', function(err) {
             console.log(err.red);
         });
     });
+}
+
+function cleanWrite(message) {
+    // Store the line buffer and cursor 
+    var buffer = rl.line;
+    var cursor = rl.cursor;
+    
+    // remove current line and display new message
+    rl.prompt();
+    rl.write(null, {ctrl: true, name: 'u'});
+    console.log(message);
+
+    // prepare new prompt for user input and fill in with current line
+    // buffer and move cursor accordingly. 
+    rl.prompt();
+    process.stdout.write(buffer);
+    rl.line = buffer;
+    rl.cursor = cursor;
+}
+
+function showPrompt() {
+    rl.prompt(true);
 }
 
 function updatePrompt() {
@@ -244,7 +274,7 @@ function updatePrompt() {
 
     promptStr += '> ';
     rl.setPrompt(promptStr.green, promptStr.length);
-    rl.prompt();
+    rl.prompt(true);
 };
 
 function listUsers(users) {
