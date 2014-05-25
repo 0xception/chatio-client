@@ -8,7 +8,7 @@
 
 ## Installation
 
-If you have a git or a github account:
+If you have a git installed (might need to be root, or run with sudo):
 
     $ npm install -g git+https://github.com/0xception/chatio-client.git
 
