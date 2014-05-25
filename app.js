@@ -38,6 +38,7 @@ module.exports.run = function run(program) {
     rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
+        //terminal: true,
         completer: function completer(line) {
             var commands = 'help connect disconnect nickname forget '
                 + 'users join leave rooms whisper exit';
@@ -252,7 +253,7 @@ function cleanWrite(message) {
     // prepare new prompt for user input and fill in with current line
     // buffer and move cursor accordingly. 
     rl.prompt();
-    process.stdout.write(buffer);
+    rl.write(buffer);
     rl.line = buffer;
     rl.cursor = cursor;
 }
